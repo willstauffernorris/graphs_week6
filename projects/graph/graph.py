@@ -99,32 +99,48 @@ class Graph:
         #print(visited)
         #return visited
 
-    def dft_recursive(self, starting_vertex):
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        #pass  # TODO
-        #s = Stack()
-        #s.push(starting_vertex)
-        #print(q)
-
-        visited = set()
-        #print(visited)
-        #print(q.size())
-
-        self.helper_dft_recursive(starting_vertex, visited)
-
-    def helper_dft_recursive(self, starting_vertex, visited_set):
-        if starting_vertex in visited_set:
-            return
-        
-        visited_set.add(starting_vertex)
+    ## inclass live code
+        if visited is None:
+            visited = set()
+        visited.add(starting_vertex)
         print(starting_vertex)
-        for next_vertex in self.get_neighbors(starting_vertex):
-            self.helper_dft_recursive(next_vertex, visited_set)
+
+        for v in self.get_neighbors(starting_vertex):
+            if v not in visited:
+                self.dft_recursive(v, visited)
+
+
+
+
+
+
+
+    #     #pass  # TODO
+    #     #s = Stack()
+    #     #s.push(starting_vertex)
+    #     #print(q)
+
+    #     visited = set()
+    #     #print(visited)
+    #     #print(q.size())
+
+    #     self.helper_dft_recursive(starting_vertex, visited)
+
+    # def helper_dft_recursive(self, starting_vertex, visited_set):
+    #     if starting_vertex in visited_set:
+    #         return
+        
+    #     visited_set.add(starting_vertex)
+    #     print(starting_vertex)
+    #     for next_vertex in self.get_neighbors(starting_vertex):
+    #         self.helper_dft_recursive(next_vertex, visited_set)
 
 
 
@@ -273,7 +289,8 @@ class Graph:
                 new_path.append(next_vertex)
                 #print(new_path)
                 self.dfs_recursive_helper(next_vertex, destination_vertex, visited_set, new_path)
-        
+        ## go down this path
+        return path
 
 
 if __name__ == '__main__':
