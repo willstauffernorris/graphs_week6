@@ -58,6 +58,8 @@ class Test(unittest.TestCase):
         sys.stdout = io.StringIO()
         self.graph.bft(1)
         output = sys.stdout.getvalue()
+        # print("OUTPUT")
+        # print(output)
 
         self.assertIn(output, bft)
 
@@ -113,7 +115,10 @@ class Test(unittest.TestCase):
             [1, 2, 4, 6],
             [1, 2, 4, 7, 6]
         ]
+        print("RESULT")
+        print(self.graph.dfs_recursive(1,6))
         self.assertIn(self.graph.dfs_recursive(1,6), dfs)
+
 
 if __name__ == '__main__':
     unittest.main()
