@@ -269,10 +269,11 @@ class Graph:
         visited = set()
         path = [starting_vertex]
 
-        new_path = self.dfs_recursive_helper(starting_vertex, destination_vertex, visited, path)
-        print("NEW PATH")
-        print(new_path)
-        return new_path
+        print(self.dfs_recursive_helper(starting_vertex, destination_vertex, visited, path))
+        
+        #print("NEW PATH")
+        #print(new_path)
+       
 
 
     def dfs_recursive_helper(self, starting_vertex, destination_vertex, visited_set, path):
@@ -280,7 +281,7 @@ class Graph:
         #path = [starting_vertex]
         if path[-1] not in visited_set:
             if path[-1] == destination_vertex:
-                print("FOUND IT")
+                print("FOUND IT !!!!!!!")
                 print(path)
                 return path
             visited_set.add(path[-1])
@@ -290,7 +291,7 @@ class Graph:
                 #print(new_path)
                 self.dfs_recursive_helper(next_vertex, destination_vertex, visited_set, new_path)
         ## go down this path
-        return path
+            #return new_path
 
 
 if __name__ == '__main__':

@@ -40,6 +40,7 @@ def earliest_ancestor(ancestors, starting_node):
 
     s = Stack()
     visited = set()
+    longest_path = []
 
     s.push([starting_node])
 
@@ -57,7 +58,7 @@ def earliest_ancestor(ancestors, starting_node):
 
         if vertex not in visited:
             visited.add(vertex)
-            print(visited)
+            # print(visited)
 
             #print(get_neighbors(vertex))
             # if get_neighbors(vertex) == set():
@@ -65,15 +66,26 @@ def earliest_ancestor(ancestors, starting_node):
             #     return -1
 
             for next_vertex in get_neighbors(vertex):
-                print(next_vertex)
+                #print(next_vertex)
             
                 new_path = path.copy()
 
                 new_path.append(next_vertex)
                 s.push(new_path)
                 print(new_path)
+                if len(new_path) > len(longest_path):
+                    longest_path = new_path
+                
+                elif len(new_path) == len(longest_path):
+                    if new_path[-1] < longest_path[-1]:
+                        longest_path = new_path
 
-    return new_path[-1]
+                print(f'LONGEST PATH {longest_path}')
+                
+
+    
+    print(f'LONGEST PATH {longest_path}')
+    return longest_path[-1]
 
                 ## edge cases:
                  ## if there is a tie, return the ancestor with the lowest numeric value
@@ -98,6 +110,7 @@ for item in test_ancestors:
 
 
 print(vertices)
-print(earliest_ancestor(test_ancestors, 1))
-print(earliest_ancestor(test_ancestors, 2))
-print(earliest_ancestor(test_ancestors, 3))
+# print(earliest_ancestor(test_ancestors, 1))
+# print(earliest_ancestor(test_ancestors, 2))
+# print(earliest_ancestor(test_ancestors, 3))
+print(earliest_ancestor(test_ancestors, 7))
