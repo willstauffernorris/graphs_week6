@@ -56,6 +56,7 @@ for item in possible_exits:
 # this path contains the room ID
 path = [world.starting_room.id]
 
+
 while len(traversal_graph) < len(room_graph):
     room = path[-1]
 
@@ -97,13 +98,14 @@ while len(traversal_graph) < len(room_graph):
             possible_exits = player.current_room.get_exits()
             for item in possible_exits:
                 traversal_graph[player.current_room.id][item] = "?"
-            traversal_graph[new_room][opposite] = old_room
+        traversal_graph[new_room][opposite] = old_room
         
         # Build the path of room IDs
         path.append(player.current_room.id)
 
     # now I just need to loop back to the last branch that was unexplored.
     if '?' not in traversal_graph[player.current_room.id].values():
+        
 
         if len(path) > 1:
             # Get the most recently traveled direction from the 'path' list of rooms
@@ -119,13 +121,12 @@ while len(traversal_graph) < len(room_graph):
         # If the len is 1, you are back at the starting room. The while loop continues.
 
 
-#print(f'FINAL TRAVERSAL PATH: {traversal_path}')
+# print(f'FINAL TRAVERSAL PATH: {traversal_path}')
+# print(f'FINAL TRAVERSAL PATH (ROOMS): {path}')
 #print(f'FINAL TRAVERSAL GRAPH: {traversal_graph}')
 
-for key in traversal_graph:
-    print(key, traversal_graph[key])
-
-
+# for key in traversal_graph:
+#     print(key, traversal_graph[key])
 
 
 # TRAVERSAL TEST
