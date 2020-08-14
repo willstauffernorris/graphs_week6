@@ -42,9 +42,9 @@ world = World()
 # You may uncomment the smaller graphs for development and testing purposes.
 map_file = "maps/test_line.txt" ##PASSED
 map_file = "maps/test_cross.txt"
-# map_file = "maps/test_loop.txt"
-# map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/test_loop.txt"
+map_file = "maps/test_loop_fork.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -75,22 +75,24 @@ for item in possible_exits:
 #print(traversal_graph[0])
 
 
-q = Queue()
+# q = Queue()
 
-q.enqueue([world.starting_room.id])
+# q.enqueue([world.starting_room.id])
 
 
-visited = traversal_graph
+# visited = traversal_graph
 
-#while q.size() > 0:
+# while q.size() > 0:
+
+# my path of rooms
+path = [world.starting_room.id]
+
 while len(traversal_graph) < len(room_graph):
-    print(f'RUNNING TRAVERSAL PATH: {traversal_path}')
+    # print(f'RUNNING TRAVERSAL PATH: {traversal_path}')
 
-    path = q.dequeue()
+    # path = q.dequeue()
 
     room = path[-1]
-
-
     
     # add the current room to the graph if it's a new room
     if room not in traversal_graph:
@@ -142,38 +144,40 @@ while len(traversal_graph) < len(room_graph):
                 traversal_graph[player.current_room.id][item] = "?"
             traversal_graph[new_room][opposite] = old_room
         
-        new_path = path.copy()
-        new_path.append(player.current_room.id)
-        q.enqueue(new_path)
-        print(f'NEW PATH: {new_path}')
-        print(f'NEW PATH, NEW EXPLORATION')
+        # new_path = path.copy()
+        path.append(player.current_room.id)
+        # print(f'PATH: {path}')
+
+        # #q.enqueue(new_path)
+        # print(f'NEW PATH: {new_path}')
+        # print(f'NEW PATH, NEW EXPLORATION')
 
         # now I just need to loop back to the last branch that was unexplored.
     if '?' not in traversal_graph[player.current_room.id].values():
-        print("FUCK YA FOUND A DEAD END")
-        #print(traversal_graph)
+        # print("FUCK YA FOUND A DEAD END")
+        
 
-        # traversal_graph[player.current_room.id]
-
-        # print(traversal_graph[player.current_room.id].values())
-
-        #print(new_path[-2])
-
-        if len(new_path) > 1:
+        if len(path) > 1:
             for key, value in traversal_graph[player.current_room.id].items():
-                if value == new_path[-2]:
+                if value == path[-2]:
                     direction_key = key
 
+            # print(f'TRAVERSAL PATH: {traversal_path}')
+
             player.travel(direction_key)
-            print(f'CURRENT ROOM {player.current_room.id}')
+            # print(f'CURRENT ROOM {player.current_room.id}')
             traversal_path.append(direction_key)
-            new_path = path.copy()
-            new_path.pop()
-            q.enqueue(new_path)
-            print(f'NEW PATH: {new_path}')
-            print(f'LEN OF PATH: {len(new_path)}')
-        if len(new_path) == 1:
-            print(f'CURRENT ROOM {player.current_room.id}')
+            # new_path = path.copy()
+            # new_path.pop()
+            path.pop()
+            # q.enqueue(new_path)
+            # print(f'PATH: {path}')
+            # print(f'LEN OF PATH: {len(new_path)}')
+        if len(path) == 1:
+            pass
+            # print(f'LEN OF PATH IS 1')
+            
+            # print(f'CURRENT ROOM {player.current_room.id}')
             # for key, value in traversal_graph[player.current_room.id].items():
             #     if value == new_path[0]:
             #         direction_key = key
@@ -183,8 +187,8 @@ while len(traversal_graph) < len(room_graph):
             # traversal_path.append(direction_key)
             # new_path = path.copy()
             # # new_path.pop(-1)
-            q.enqueue(new_path)
-            print(f'NEW PATH: {new_path}')
+            # q.enqueue(new_path)
+        #     print(f'NEW PATH: {new_path}')
 
 
 
@@ -195,8 +199,8 @@ while len(traversal_graph) < len(room_graph):
         #     key = new_path[0]
         #     player.travel(key)
 
-    print(traversal_graph)
-    print(player.current_room.id)
+    # print(traversal_graph)
+    # print(player.current_room.id)
 
 
 
