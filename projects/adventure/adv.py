@@ -1,19 +1,11 @@
-class Queue():
-    def __init__(self):
-        self.queue = []
-    def enqueue(self, value):
-        self.queue.append(value)
-    def dequeue(self):
-        if self.size() > 0:
-            return self.queue.pop(0)
-        else:
-            return None
-    def size(self):
-        return len(self.queue)
+from room import Room
+from player import Player
+from world import World
 
+import random
+from ast import literal_eval
 
-
-
+# Function to get the opposite direction of an input
 def opposite_direction(direction):
     if direction == 'n':
         direction = 's'
@@ -25,15 +17,6 @@ def opposite_direction(direction):
         direction = 'e'
     
     return direction
-
-#print(opposite_direction('n'))
-
-from room import Room
-from player import Player
-from world import World
-
-import random
-from ast import literal_eval
 
 # Load world
 world = World()
@@ -56,70 +39,46 @@ world.print_rooms()
 player = Player(world.starting_room)
 
 # traversal_path = ['n', 'n']
+# This path contains cardinal directions
 traversal_path = []
 
-
-
-## Setting up the first entry in the traversal graph
+## This graph contains a record of all the rooms I've visited, and which exits I've explored
 traversal_graph = {}
 
-possible_exits = world.starting_room.get_exits()
-#print(possible_exits)
-
+## Setting up the first entry in the traversal graph
+## It needs to be pre-populated
 traversal_graph[world.starting_room.id] = {}
-
+possible_exits = world.starting_room.get_exits()
 for item in possible_exits:
     traversal_graph[world.starting_room.id][item] = "?"
 
-
-#print(traversal_graph[0])
-
-
-# q = Queue()
-
-# q.enqueue([world.starting_room.id])
-
-
-# visited = traversal_graph
-
-# while q.size() > 0:
-
 # my path of rooms
+# this path contains the room ID
 path = [world.starting_room.id]
 
 while len(traversal_graph) < len(room_graph):
-    # print(f'RUNNING TRAVERSAL PATH: {traversal_path}')
-
-    # path = q.dequeue()
-
     room = path[-1]
-    
+
     # add the current room to the graph if it's a new room
+    # Populate the exits in the room with "?"
     if room not in traversal_graph:
-
         traversal_graph[player.current_room.id] = {}
-
         possible_exits = player.current_room.get_exits()
-
         for item in possible_exits:
-            # if player.current_room.id is world.starting_room.id:
             traversal_graph[player.current_room.id][item] = "?"
 
-    # print(player.current_room.id)
-
-
-     #picks a random unexplored direction from the player's current room,
+    #picks a random unexplored direction from the player's current room,
     random_direction = random.choice(player.current_room.get_exits())
 
-    if traversal_graph[player.current_room.id][random_direction] is '?':
-        #print("UNEXPLORED!")
-    #  travels and logs that direction
-    #print(f'TRAVELING IN A "{random_direction.upper()}" DIRECTION')
-
+    #ravels and logs that direction
+    if traversal_graph[player.current_room.id][random_direction] is '?':      
+ 
         # save the name of the current (soon to be old) room
         old_room = player.current_room.id
-    
+
+        # Move in the random direction
         player.travel(random_direction)
+
         ## save the direction traveled
         traversal_path.append(random_direction)
 
@@ -131,190 +90,40 @@ while len(traversal_graph) < len(room_graph):
 
         #need to get opposite of random direction
         opposite = opposite_direction(random_direction)
-        # print(random_direction)
-        # print(opposite)
-        # print(traversal_graph[new])
 
         ## repeating the block of code above. I'm sure there's a better way to do this.
         if player.current_room.id not in traversal_graph:
             traversal_graph[player.current_room.id] = {}
             possible_exits = player.current_room.get_exits()
             for item in possible_exits:
-                # if player.current_room.id is world.starting_room.id:
                 traversal_graph[player.current_room.id][item] = "?"
             traversal_graph[new_room][opposite] = old_room
         
-        # new_path = path.copy()
+        # Build the path of room IDs
         path.append(player.current_room.id)
-        # print(f'PATH: {path}')
 
-        # #q.enqueue(new_path)
-        # print(f'NEW PATH: {new_path}')
-        # print(f'NEW PATH, NEW EXPLORATION')
-
-        # now I just need to loop back to the last branch that was unexplored.
+    # now I just need to loop back to the last branch that was unexplored.
     if '?' not in traversal_graph[player.current_room.id].values():
-        # print("FUCK YA FOUND A DEAD END")
-        
 
         if len(path) > 1:
+            # Get the most recently traveled direction from the 'path' list of rooms
             for key, value in traversal_graph[player.current_room.id].items():
                 if value == path[-2]:
                     direction_key = key
 
-            # print(f'TRAVERSAL PATH: {traversal_path}')
-
             player.travel(direction_key)
-            # print(f'CURRENT ROOM {player.current_room.id}')
             traversal_path.append(direction_key)
-            # new_path = path.copy()
-            # new_path.pop()
+            # Each time you arrive in a room that's been explored, keep going back down the path you just traveled.
             path.pop()
-            # q.enqueue(new_path)
-            # print(f'PATH: {path}')
-            # print(f'LEN OF PATH: {len(new_path)}')
-        if len(path) == 1:
-            pass
-            # print(f'LEN OF PATH IS 1')
-            
-            # print(f'CURRENT ROOM {player.current_room.id}')
-            # for key, value in traversal_graph[player.current_room.id].items():
-            #     if value == new_path[0]:
-            #         direction_key = key
-            
-            # player.travel(direction_key)
-            # print(f'CURRENT ROOM {player.current_room.id}')
-            # traversal_path.append(direction_key)
-            # new_path = path.copy()
-            # # new_path.pop(-1)
-            # q.enqueue(new_path)
-        #     print(f'NEW PATH: {new_path}')
+        
+        # If the len is 1, you are back at the starting room. The while loop continues.
 
 
-
-        # else: # if len of newpath is 1
-        #     for key, value in traversal_graph[player.current_room.id].items():
-        #         if value == new_path[-2]:
-        #             print(key)
-        #     key = new_path[0]
-        #     player.travel(key)
-
-    # print(traversal_graph)
-    # print(player.current_room.id)
-
-
-
-
-print(f'FINAL TRAVERSAL PATH: {traversal_path}')
+#print(f'FINAL TRAVERSAL PATH: {traversal_path}')
 #print(f'FINAL TRAVERSAL GRAPH: {traversal_graph}')
 
 for key in traversal_graph:
     print(key, traversal_graph[key])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # this is the sub- data structure
-# links_to_other_rooms = {}
-
-# ## This is my "visited"
-# traversal_graph = {}
-
-# # traversal_path = ['n', 'n']
-# traversal_path = []
-
-# q = Queue()
-
-# print(world.starting_room.id)
-# q.enqueue([world.starting_room.id])
-    
-
-# while q.size() > 0:
-
-#     #print('~~~~~NEXT ITERATION~~~~~~')
-#     ## check current room
-#     current_room = player.current_room.id
-#     print(f'CURRENT ROOM: {current_room}')
-
-#     path = q.dequeue()
-#     most_recent_room = path[-1]
-
-#     # what exits are avaliable in this current room?
-#     exit_list = player.current_room.get_exits()
-
-#     neighors_list = [0,1,2]
-
-
-#     ## Populate the list with "?"
-#     # print(f'EXIT LIST: {exit_list}') 
-#     # for direction in exit_list:
-#     #     print(f"---> DIRECTION: {direction}")
-#     #     links_to_other_rooms[direction] = "?"  
-
-
-#     #BFS will return the path as a list of room IDs. You will need to convert this to a list of n/s/e/w directions before you can add it to your traversal path.
-
-
-#     print(traversal_graph)
-
-#     # If an exit has been explored, you can put it in your BFS queue like normal.
-#     if most_recent_room not in traversal_graph:
-#         #Instead of searching for a target vertex, you are searching for an exit with a '?' as the value. 
-#         # if item in most_recent_room == "?": ## This will need to be fixed
-#         #     ## update the links to other rooms
-#         #     pass
-    
-#         traversal_graph[most_recent_room] = exit_list
-
-
-
-
-#         for next_room in neighors_list:
-#             new_path = path.copy()
-#             new_path.append(next_room)
-#             q.enqueue(new_path)
-    
-#     #     #picks a random unexplored direction from the player's current room,
-#     random_direction = random.choice(player.current_room.get_exits())
-
-#     #     #  travels and logs that direction
-#     print(f'TRAVELING IN A "{random_direction.upper()}" DIRECTION')
-#     player.travel(random_direction)
-
-#     traversal_path = new_path
-#     traversal_path.append(random_direction)
-#     print(f'RUNNING TRAVERSAL GRAPH: {traversal_graph}')
-
-        
-
-# print(f'FINAL TRAVERSAL PATH: {traversal_path}')
-# print(f'FINAL TRAVERSAL GRAPH: {traversal_graph}')
-
-
-
-
-
-
 
 
 
